@@ -778,7 +778,13 @@ def _save(im, fp, filename):
 
     # The EXIF info needs to be written as one block, + APP1, + one spare byte.
     # Ensure that our buffer is big enough. Same with the icc_profile block.
-    bufsize = max(ImageFile.MAXBLOCK, bufsize, len(exif) + 5, len(extra) + 1)
+
+    if len(exif):
+        bufsize += len(exif) + 5
+    if len(extra):
+        bufsize += len(extra) + 1
+
+    bufsize = max(ImageFile.MAXBLOCK, bufsize)
 
     ImageFile._save(im, fp, [("jpeg", (0, 0) + im.size, 0, rawmode)], bufsize)
 
